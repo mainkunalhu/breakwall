@@ -17,10 +17,12 @@ def test_ssn_detected_and_redacted():
 def test_phone_requires_separators_or_plus():
     assert "phone" in find_pii("Call +1 415-555-0132 tomorrow.")
     assert "phone" in find_pii("Call 415-555-0132 tomorrow.")
-    # Bare integers, years, order numbers must NOT flag (low FP)
+    assert "phone" in find_pii("My phone 020-7946-0958 is new.")
+    # Bare integers, years, dates, order numbers must NOT flag (low FP)
     assert find_pii("I have 2 apples and 40000 words.") == []
     assert find_pii("In 2026 we shipped v2.") == []
     assert find_pii("Order 12345678 is ready.") == []
+    assert find_pii("The meeting is on 2026-09-24.") == []
 
 
 def test_credit_card_needs_luhn():

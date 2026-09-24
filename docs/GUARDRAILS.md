@@ -17,7 +17,8 @@ prompt -> PII scan -> heuristic rules -> [prompt-guard-2] -> [LLM judge] -> allo
    separate 0.5 signal — never auto-blocks. Score = max weight + 0.1 per extra signal.
 3. **Classifier** (`app/prompt_guard.py`): `meta-llama/llama-prompt-guard-2-86m` via Groq.
    NOTE: Groq serves it as a text-classification model — single user message only
-   (system messages → 400), returns a raw `0..1` score string. Blended 60/40 with heuristics.
+   (system messages → 400), returns a raw `0..1` score string. Combined by max
+   with heuristics (a blend would neuter a lone 0.99 classifier vote).
    Returns `None` without key/offline → heuristics-only fallback.
 4. **LLM judge** (`app/judge.py`): `openai/gpt-oss-120b`, review band only, has veto
    toward allow/redact (confidence ≥ 0.6) to suppress false positives.

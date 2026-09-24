@@ -37,35 +37,39 @@ class GuardResponse(BaseModel):
 
 
 def _combine(heuristic: float, classifier: float | None) -> float:
+    # Max, not a blend: an average lets a strong classifier vote (0.99)
+    # die below the review band whenever heuristics miss. The judge in the
+    # review band is what keeps false positives low.
     if classifier is None:
         return heuristic
-    return round(0.6 * heuristic + 0.4 * classifier, 3)
+    return round(max(heuristic, classifier), 3)
 
 
 def decide(prompt: str) -> GuardResponse:
     pii_result = pii_mod.redact(prompt)
     rule_result = rules_mod.score_prompt(prompt)
-    combined = rule_result.score
+    # Always consult the classifier first — heuristics alone miss paraphrases
+    # (score 0.0 never reaches the review band otherwise). Cheap (~100ms).
+    gs = pg_mod.score(prompt)
+    combined = _combine(rule_result.score, gs.score if gs else None)
 
     # High-confidence band: block without spending judge budget.
     if combined >= config.BLOCK_THRESHOLD:
-        gs = pg_mod.score(prompt)
-        if gs is not None:
-            combined = _combine(combined, gs.score)
         _counts["block"] += 1
         return GuardResponse(
             decision="block",
             blockScore=combined,
             piiFindings=pii_result.findings,
             redactedPrompt=pii_result.redacted if pii_result.findings else None,
-            reason=f"heuristic:{'|'.join(rule_result.reasons) or 'high-score'}",
+            reason=(
+                f"heuristic:{'|'.join(rule_result.reasons)}"
+                if rule_result.reasons
+                else f"classifier:{combined}"
+            ),
         )
 
-    # Review band: classifier + judge veto (low-FP path).
+    # Review band: judge veto (low-FP path). Classifier already blended above.
     if combined >= config.REVIEW_THRESHOLD:
-        gs = pg_mod.score(prompt)
-        if gs is not None:
-            combined = _combine(combined, gs.score)
         verdict = judge_mod.judge(prompt, pii_result.findings, rule_result.reasons)
         if verdict is not None and not verdict.block and verdict.confidence >= 0.6:
             if pii_result.findings:

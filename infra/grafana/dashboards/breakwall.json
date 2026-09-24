@@ -1,0 +1,114 @@
+{
+  "title": "BreakWall gateway",
+  "uid": "breakwall-gateway",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 2,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requests by decision",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "sum by (decision) (increase(breakwall_gateway_requests_total[5m]))",
+          "legendFormat": "{{decision}}"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "id": 2,
+      "title": "Latency p50/p95/p99 (ms)",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "breakwall_gateway_request_duration_ms{quantile=\"0.5\"}",
+          "legendFormat": "p50"
+        },
+        {
+          "expr": "breakwall_gateway_request_duration_ms{quantile=\"0.95\"}",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "breakwall_gateway_request_duration_ms{quantile=\"0.99\"}",
+          "legendFormat": "p99"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+    },
+    {
+      "id": 3,
+      "title": "Block % (5m)",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "100 * sum(increase(breakwall_gateway_block_total[5m])) / clamp_min(sum(increase(breakwall_gateway_requests_total[5m])), 1)"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 8 }
+    },
+    {
+      "id": 4,
+      "title": "Cache-hit % (5m)",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "100 * sum(increase(breakwall_gateway_cache_hits_total[5m])) / clamp_min(sum(increase(breakwall_gateway_requests_total[5m])), 1)"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 8 }
+    },
+    {
+      "id": 5,
+      "title": "Guard fallbacks",
+      "type": "stat",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [{ "expr": "breakwall_guard_fallback_total" }],
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 8 }
+    },
+    {
+      "id": 6,
+      "title": "Blocks by reason",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "targets": [
+        {
+          "expr": "sum by (reason) (increase(breakwall_gateway_block_total[5m]))",
+          "legendFormat": "{{reason}}"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 8 }
+    },
+    {
+      "id": 7,
+      "title": "Eval ASR (Attack Success Rate)",
+      "type": "timeseries",
+      "datasource": { "type": "postgres", "uid": "Postgres" },
+      "targets": [
+        {
+          "rawSql": "SELECT finished_at AS \"time\", asr FROM runs ORDER BY finished_at ASC",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 }
+    },
+    {
+      "id": 8,
+      "title": "Eval Leakage",
+      "type": "timeseries",
+      "datasource": { "type": "postgres", "uid": "Postgres" },
+      "targets": [
+        {
+          "rawSql": "SELECT finished_at AS \"time\", leakage FROM runs ORDER BY finished_at ASC",
+          "format": "time_series"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 }
+    }
+  ]
+}

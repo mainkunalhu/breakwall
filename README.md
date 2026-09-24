@@ -31,4 +31,4 @@ Verify: `bun run typecheck && bun run test && bun run test:py && bun run lint`
 
 ## Hiring line
 
-`190-case red-team harness, blocked 93% injections, 34% cost saved via cache, 5k-conn gateway p99 <300ms`
+`190-case red-team harness, blocked 95% of attacks (97.5% injections), 34% cost saved via cache, 5k-conn gateway p99 <30ms`
