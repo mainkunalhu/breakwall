@@ -2,6 +2,7 @@ apiVersion: 1
 datasources:
   - name: Postgres
     type: postgres
+    uid: Postgres
     url: postgres:5432
     user: breakwall
     secureJsonData:

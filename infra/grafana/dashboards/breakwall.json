@@ -9,7 +9,7 @@
       "id": 1,
       "title": "Requests by decision",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [
         {
           "expr": "sum by (decision) (increase(breakwall_gateway_requests_total[5m]))",
@@ -22,7 +22,7 @@
       "id": 2,
       "title": "Latency p50/p95/p99 (ms)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [
         {
           "expr": "breakwall_gateway_request_duration_ms{quantile=\"0.5\"}",
@@ -43,7 +43,7 @@
       "id": 3,
       "title": "Block % (5m)",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [
         {
           "expr": "100 * sum(increase(breakwall_gateway_block_total[5m])) / clamp_min(sum(increase(breakwall_gateway_requests_total[5m])), 1)"
@@ -55,7 +55,7 @@
       "id": 4,
       "title": "Cache-hit % (5m)",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [
         {
           "expr": "100 * sum(increase(breakwall_gateway_cache_hits_total[5m])) / clamp_min(sum(increase(breakwall_gateway_requests_total[5m])), 1)"
@@ -67,7 +67,7 @@
       "id": 5,
       "title": "Guard fallbacks",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [{ "expr": "breakwall_guard_fallback_total" }],
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 8 }
     },
@@ -75,7 +75,7 @@
       "id": 6,
       "title": "Blocks by reason",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "Prometheus" },
       "targets": [
         {
           "expr": "sum by (reason) (increase(breakwall_gateway_block_total[5m]))",
