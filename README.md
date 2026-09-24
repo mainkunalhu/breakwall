@@ -3,9 +3,9 @@
 Safety + quality lab: fires 190 attacks (injection 80, PII-leak 40, jailbreak 40,
 tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/caches.
 
-> Status: P0–P3 done (monorepo, contracts+infra, guardrails, gateway). P4 next:
-> 190-case suite + eval-runner. TUI-first (OpenTUI React), no Next.js.
-> Docs: `docs/ARCHITECTURE.md`, `docs/METRICS.md`, `docs/GUARDRAILS.md`, `docs/GATEWAY.md`.
+> Status: P0–P5 done (monorepo, contracts+infra, guardrails, gateway, eval,
+> TUI board). P6 next: k6 + Grafana proof. TUI-first (OpenTUI React), no Next.js.
+> Docs: `docs/ARCHITECTURE.md`, `docs/METRICS.md`, `docs/GUARDRAILS.md`, `docs/GATEWAY.md`, `docs/EVAL.md`, `docs/TUI.md`.
 
 ## Stack
 

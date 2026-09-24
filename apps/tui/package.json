@@ -17,6 +17,7 @@
   "dependencies": {
     "@opentui/core": "^0.5.11",
     "@opentui/react": "^0.5.11",
+    "postgres": "^3.4.5",
     "react": "^19.2.8"
   },
   "engines": {
