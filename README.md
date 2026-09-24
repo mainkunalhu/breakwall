@@ -3,8 +3,6 @@
 Safety + quality lab: fires 190 attacks (injection 80, PII-leak 40, jailbreak 40,
 tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/caches.
 
-> Status: P0–P5 done (monorepo, contracts+infra, guardrails, gateway, eval,
-> TUI board). P6 next: k6 + Grafana proof. TUI-first (OpenTUI React), no Next.js.
 > Docs: `docs/ARCHITECTURE.md`, `docs/METRICS.md`, `docs/GUARDRAILS.md`, `docs/GATEWAY.md`, `docs/EVAL.md`, `docs/TUI.md`.
 
 ## Stack
@@ -18,17 +16,28 @@ tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/cach
 
 ## Quickstart
 
+1. **Setup environment and install dependencies**:
+   ```bash
+   cp .env.example .env   # Add your GROQ_API_KEY
+   bun install
+   ```
+
+2. **Start the infrastructure and core services (Gateway & Guardrails)**:
+   ```bash
+   make dev-all
+   ```
+
+3. **Start the TUI (in a new terminal)**:
+   ```bash
+   bun --filter tui dev
+   ```
+
+4. **Verify tests (optional)**:
+   ```bash
+   bun run typecheck && bun run test && bun run test:py && bun run lint
+   ```
+
+To gracefully stop the background infrastructure (Postgres, Redis, Prometheus, Grafana), you can run:
 ```bash
-cp .env.example .env   # add GROQ_API_KEY
-bun install
-docker-compose -f infra/docker-compose.yml up -d
-bun --filter gateway dev    # :8787 (needs guardrails below)
-bun --filter tui dev        # eval board
-(cd services/guardrails && uv run uvicorn app.main:app --port 8000)
+make dev-down
 ```
-
-Verify: `bun run typecheck && bun run test && bun run test:py && bun run lint`
-
-## Hiring line
-
-`190-case red-team harness, blocked 95% of attacks (97.5% injections), 34% cost saved via cache, 5k-conn gateway p99 <30ms`
