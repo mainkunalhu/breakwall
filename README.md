@@ -8,7 +8,6 @@ tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/cach
 ## Stack
 
 - `apps/gateway` — Hono on Bun (rate-limit + semantic cache + guardrails + streaming abort)
-- `apps/dashboard` — Vite + React web dashboard (live metrics, attack verdicts, config)
 - `apps/workers` — Bun workers (eval fan-out)
 - `services/guardrails` — Python FastAPI (regex + prompt-guard-2 + LLM-judge)
 - `services/eval-runner` — Python nightly runner (ASR, leakage, faithfulness, p95, cost/query)
@@ -22,14 +21,12 @@ tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/cach
    bun install
    ```
 
-2. **Start everything** (infra + guardrails + gateway + dashboard):
+2. **Start everything** (infra + guardrails + gateway):
    ```bash
    make dev-all
    ```
 
-3. **Open the dashboard** at http://localhost:5173
-
-4. **Stop everything**:
+3. **Stop everything**:
    ```bash
    make dev-down
    ```

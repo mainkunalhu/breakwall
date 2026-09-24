@@ -5,7 +5,6 @@
   "description": "BreakWall — Red-Team + Eval Harness for Groq LLMs (TUI-first)",
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev:dashboard": "bun --filter dashboard dev",
     "dev:gateway": "bun --filter gateway dev",
     "build": "bun --filter '*' build",
     "test": "bun --filter '*' test",
