@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: BreakWall
+  version: 0.1.0
+  description: Red-team + eval harness for Groq LLMs. Gateway blocks/redacts/caches.
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: ok
+  /v1/chat:
+    post:
+      summary: Gateway chat passthrough (P3 implements)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Model output with gateway decision
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+        "400":
+          description: Validation error
+        "403":
+          description: Blocked by guardrails
+  /v1/guard:
+    post:
+      summary: Guardrails verdict (P2 implements)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuardRequest"
+      responses:
+        "200":
+          description: Guard verdict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuardVerdict"
+  /v1/eval:
+    post:
+      summary: Trigger eval run (P4 implements)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvalRunRequest"
+      responses:
+        "200":
+          description: Eval summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvalSummary"
+  /metrics:
+    get:
+      summary: Prometheus metrics (gateway)
+      responses:
+        "200":
+          description: Prometheus text exposition
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required: [model, messages]
+      properties:
+        model: { type: string, example: openai/gpt-oss-120b }
+        messages:
+          type: array
+          items:
+            type: object
+            required: [role, content]
+            properties:
+              role: { type: string, enum: [system, user, assistant, tool] }
+              content: { type: string }
+        stream: { type: boolean, default: false }
+        maxTokens: { type: integer }
+        temperature: { type: number }
+    ChatResponse:
+      type: object
+      properties:
+        model: { type: string }
+        decision: { type: string, enum: [allow, redact, block, cache_hit] }
+        output: { type: string }
+        cached: { type: boolean }
+        redacted: { type: boolean }
+        latencyMs: { type: number }
+        costUsd: { type: number }
+    GuardRequest:
+      type: object
+      required: [prompt]
+      properties:
+        prompt: { type: string }
+        model: { type: string }
+    GuardVerdict:
+      type: object
+      properties:
+        decision: { type: string, enum: [allow, redact, block, cache_hit] }
+        blockScore: { type: number, minimum: 0, maximum: 1 }
+        piiFindings: { type: array, items: { type: string } }
+        redactedPrompt: { type: string }
+        reason: { type: string }
+    EvalRunRequest:
+      type: object
+      required: [model]
+      properties:
+        model: { type: string }
+        suites: { type: array, items: { type: string } }
+        limit: { type: integer }
+        seed: { type: integer }
+    EvalSummary:
+      type: object
+      properties:
+        runId: { type: string, format: uuid }
+        model: { type: string }
+        total: { type: integer }
+        asr: { type: number }
+        leakage: { type: number }
+        faithfulness: { type: number }
+        p95Ms: { type: number }
+        costPerQuery: { type: number }
+        passed: { type: boolean }

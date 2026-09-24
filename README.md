@@ -19,7 +19,7 @@ tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/cach
 ```bash
 cp .env.example .env   # add GROQ_API_KEY
 bun install
-docker compose -f infra/docker-compose.yml up -d
+docker-compose -f infra/docker-compose.yml up -d
 bun --filter tui dev
 bun --filter gateway dev
 ```
