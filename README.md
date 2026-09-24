@@ -3,7 +3,9 @@
 Safety + quality lab: fires 190 attacks (injection 80, PII-leak 40, jailbreak 40,
 tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/caches.
 
-> Phase 0 scaffold. See `docs/` for architecture. TUI-first (OpenTUI React), no Next.js.
+> Status: P0–P3 done (monorepo, contracts+infra, guardrails, gateway). P4 next:
+> 190-case suite + eval-runner. TUI-first (OpenTUI React), no Next.js.
+> Docs: `docs/ARCHITECTURE.md`, `docs/METRICS.md`, `docs/GUARDRAILS.md`, `docs/GATEWAY.md`.
 
 ## Stack
 
@@ -14,15 +16,18 @@ tool-misuse 30) at Groq models nightly, scores them, gateway blocks/redacts/cach
 - `services/eval-runner` — Python nightly runner (ASR, leakage, faithfulness, p95, cost/query)
 - `infra/` — Docker Compose (Postgres, Redis, Prometheus, Grafana) + k6
 
-## Quickstart (P0)
+## Quickstart
 
 ```bash
 cp .env.example .env   # add GROQ_API_KEY
 bun install
 docker-compose -f infra/docker-compose.yml up -d
-bun --filter tui dev
-bun --filter gateway dev
+bun --filter gateway dev    # :8787 (needs guardrails below)
+bun --filter tui dev        # eval board
+(cd services/guardrails && uv run uvicorn app.main:app --port 8000)
 ```
+
+Verify: `bun run typecheck && bun run test && bun run test:py && bun run lint`
 
 ## Hiring line
 

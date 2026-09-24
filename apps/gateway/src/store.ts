@@ -36,10 +36,6 @@ export function getRedis(): Redis | null {
   return _redis
 }
 
-export function redisAvailable(): boolean {
-  return getRedis() !== null && !_redisDown
-}
-
 export function sha256hex(s: string): string {
   return createHash("sha256").update(s).digest("hex")
 }

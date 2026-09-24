@@ -104,12 +104,13 @@ components:
         model: { type: string }
     GuardVerdict:
       type: object
+      # FastAPI serializes absent optionals as null — both are nullable on the wire.
       properties:
         decision: { type: string, enum: [allow, redact, block, cache_hit] }
         blockScore: { type: number, minimum: 0, maximum: 1 }
         piiFindings: { type: array, items: { type: string } }
-        redactedPrompt: { type: string }
-        reason: { type: string }
+        redactedPrompt: { type: string, nullable: true }
+        reason: { type: string, nullable: true }
     EvalRunRequest:
       type: object
       required: [model]

@@ -46,6 +46,17 @@ describe("contracts", () => {
     ).toBe(false)
   })
 
+  test("GuardVerdict accepts FastAPI nulls for optional fields", () => {
+    const r = GuardVerdict.safeParse({
+      decision: "block",
+      blockScore: 0.97,
+      piiFindings: [],
+      redactedPrompt: null,
+      reason: null,
+    })
+    expect(r.success).toBe(true)
+  })
+
   test("GuardRequest requires prompt", () => {
     expect(GuardRequest.safeParse({}).success).toBe(false)
     expect(GuardRequest.safeParse({ prompt: "hi" }).success).toBe(true)

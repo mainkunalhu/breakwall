@@ -27,7 +27,9 @@ Contracts: `packages/contracts` (zod) + `openapi.yaml` are the single source of
 truth. Gateway, guardrails, eval-runner, TUI must validate against them.
 
 Infra: `docker-compose -f infra/docker-compose.yml up -d` brings up
-postgres :5432, redis :6379, prometheus :9090, grafana :3000, gateway-stub :8787.
-SQL init runs automatically from `infra/sql/` on first boot.
+postgres :5432, redis :6379, prometheus :9090, grafana :3000.
+Run the gateway (`bun --filter gateway dev`) and guardrails
+(`uv run uvicorn app.main:app --port 8000`) on the host — Prometheus scrapes
+both via `host.docker.internal`.
 
 Compose note: this machine uses the `docker-compose` binary (not `docker compose`).

@@ -34,8 +34,6 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
-    depends_on:
-      - gateway-stub
     restart: unless-stopped
 
   grafana:
@@ -49,13 +47,6 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
-    restart: unless-stopped
-
-  # Placeholder target so Prometheus has something to scrape in P1.
-  # Real gateway (apps/gateway, :8787) replaces this in P3.
-  gateway-stub:
-    image: nginx:alpine
-    ports: ["8787:80"]
     restart: unless-stopped
 
 volumes:
