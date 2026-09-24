@@ -1,0 +1,6 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      run: bunx @biomejs/biome@1.9.4 check --write {staged_files}
+      stage_fixed: true

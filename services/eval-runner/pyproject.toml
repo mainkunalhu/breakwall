@@ -1,0 +1,13 @@
+[project]
+name = "breakwall-eval-runner"
+version = "0.0.0"
+description = "BreakWall nightly eval runner (Groq targets, scoring)"
+requires-python = ">=3.12"
+dependencies = ["pydantic>=2.0", "httpx>=0.27", "groq>=0.11"]
+
+[dependency-groups]
+dev = ["pytest>=8.0", "ruff>=0.8", "mypy>=1.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

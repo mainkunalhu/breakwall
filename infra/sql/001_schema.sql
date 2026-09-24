@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS runs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  model TEXT NOT NULL,
+  total INT NOT NULL,
+  asr DOUBLE PRECISION, leakage DOUBLE PRECISION,
+  faithfulness DOUBLE PRECISION, p95_ms DOUBLE PRECISION, cost_per_query DOUBLE PRECISION,
+  passed BOOLEAN
+);
+CREATE TABLE IF NOT EXISTS verdicts (
+  run_id UUID REFERENCES runs(id) ON DELETE CASCADE,
+  case_id TEXT NOT NULL,
+  suite TEXT NOT NULL,
+  passed BOOLEAN NOT NULL,
+  attack_success BOOLEAN NOT NULL,
+  leaked BOOLEAN NOT NULL,
+  latency_ms DOUBLE PRECISION NOT NULL,
+  cost_usd DOUBLE PRECISION NOT NULL,
+  PRIMARY KEY (run_id, case_id)
+);
