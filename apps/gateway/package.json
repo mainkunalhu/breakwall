@@ -6,10 +6,13 @@
     "dev": "bun run --watch src/index.ts",
     "build": "bun build src/index.ts --target bun --outdir dist",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "test": "BREAKWALL_OFFLINE_TEST=1 GROQ_API_KEY=test-key GUARDRAILS_URL=http://127.0.0.1:1 bun test"
   },
   "dependencies": {
-    "hono": "^4.7.0"
+    "@breakwall/contracts": "workspace:*",
+    "hono": "^4.7.0",
+    "ioredis": "^5.4.1",
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
     "@types/bun": "1.3.14",

@@ -71,8 +71,9 @@ export const GuardVerdict = z.object({
   decision: GatewayDecision,
   blockScore: z.number().min(0).max(1),
   piiFindings: z.array(PiiFinding).default([]),
-  redactedPrompt: z.string().optional(),
-  reason: z.string().optional(),
+  // FastAPI serializes missing values as null — accept both.
+  redactedPrompt: z.string().nullish(),
+  reason: z.string().nullish(),
 })
 export type GuardVerdict = z.infer<typeof GuardVerdict>
 
