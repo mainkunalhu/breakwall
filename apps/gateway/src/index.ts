@@ -1,6 +1,7 @@
 import { ChatRequest, type ChatResponse } from "@breakwall/contracts"
 import { Hono } from "hono"
 import { stream } from "hono/streaming"
+import { api } from "./api.ts"
 import { config } from "./config.ts"
 import { logGateway, promptHashFor } from "./db.ts"
 import { collectJson, estimateCost, groqRequest } from "./groq.ts"
@@ -14,6 +15,7 @@ import {
 import { cacheGet, cacheSet, rateCheck } from "./store.ts"
 
 const app = new Hono()
+app.route("/api", api)
 
 app.get("/health", (c) =>
   c.json({ ok: true, service: "breakwall-gateway", phase: "P3" }),
